@@ -1,9 +1,6 @@
 $(document).ready(function() {
-	var x = "x";
-	var o = "o";
 	var turns = 0;
 
-	// Spot vars
 	var spot1 = $('#spot1');
 	var spot2 = $('#spot2');
 	var spot3 = $('#spot3');
@@ -14,88 +11,61 @@ $(document).ready(function() {
 	var spot8 = $('#spot8');
 	var spot9 = $('#spot9');
 
-	$('#board li').on('click', function() {
-		if (spot1.hasClass('o') && spot2.hasClass('o') && spot3.hasClass('o') ||
-		    spot4.hasClass('o') && spot5.hasClass('o') && spot6.hasClass('o') ||
-		    spot7.hasClass('o') && spot8.hasClass('o') && spot9.hasClass('o') ||
-		    spot1.hasClass('o') && spot4.hasClass('o') && spot7.hasClass('o') ||
-		    spot2.hasClass('o') && spot5.hasClass('o') && spot8.hasClass('o') ||
-		    spot3.hasClass('o') && spot6.hasClass('o') && spot9.hasClass('o') ||
-		    spot1.hasClass('o') && spot5.hasClass('o') && spot9.hasClass('o') ||
-		    spot3.hasClass('o') && spot5.hasClass('o') && spot7.hasClass('o')
-		    ){
-			alert('Winner: O');
-			$('#board li').text('+');
-			$('#board li').removeClass('disable');
-			$('#board li').removeClass('o');
-			$('#board li').removeClass('x');
-		}
+	// Check for every row, column and diagonal
+	function checkWinningCondition(player) {
+		return spot1.hasClass(player) && spot2.hasClass(player) && spot3.hasClass(player) ||
+		spot4.hasClass(player) && spot5.hasClass(player) && spot6.hasClass(player) ||
+	    spot7.hasClass(player) && spot8.hasClass(player) && spot9.hasClass(player) ||
+	    spot1.hasClass(player) && spot4.hasClass(player) && spot7.hasClass(player) ||
+	    spot2.hasClass(player) && spot5.hasClass(player) && spot8.hasClass(player) ||
+	    spot3.hasClass(player) && spot6.hasClass(player) && spot9.hasClass(player) ||
+	    spot1.hasClass(player) && spot5.hasClass(player) && spot9.hasClass(player) ||
+	    spot3.hasClass(player) && spot5.hasClass(player) && spot7.hasClass(player);
+	}
 
-		else if (spot1.hasClass('x') && spot2.hasClass('x') && spot3.hasClass('x') ||
-		    spot4.hasClass('x') && spot5.hasClass('x') && spot6.hasClass('x') ||
-		    spot7.hasClass('x') && spot8.hasClass('x') && spot9.hasClass('x') ||
-		    spot1.hasClass('x') && spot4.hasClass('x') && spot7.hasClass('x') ||
-		    spot2.hasClass('x') && spot5.hasClass('x') && spot8.hasClass('x') ||
-		    spot3.hasClass('x') && spot6.hasClass('x') && spot9.hasClass('x') ||
-		    spot1.hasClass('x') && spot5.hasClass('x') && spot9.hasClass('x') ||
-		    spot3.hasClass('x') && spot5.hasClass('x') && spot7.hasClass('x')
-		    ){
-			alert('Winner: X');
-			$('#board li').text('+');
-			$('#board li').removeClass('disable');
-			$('#board li').removeClass('o');
-			$('#board li').removeClass('x');
-		}
+	// Resetting the board
+	function resetBoard() {
+		$('#board td').text('');
+		$('#board td').removeClass('disable');
+		$('#board td').removeClass('o');
+		$('#board td').removeClass('x');
+	}
 
-		else if (turns == 9) {
-			alert('Tie Game');
-			$('#board li').text('+');
-			$('#board li').removeClass('disable');
-			$('#board li').removeClass('o');
-			$('#board li').removeClass('x');
-			turns = 0;
-		}
-
-		else if ($(this).hasClass('disable')) {
+	$('#board td').on('click', function() {
+		// Cannot click on occupied space
+		if ($(this).hasClass('disable')) {
 			alert('This spot is already filled');
 		}
 
-		// Whose turn is it? Either it is o turn
+		// O starts first, so even-indexed turn is O's turn
 		else if (turns%2 == 0) {
 			turns++;
-			$(this).text(o);
+			$(this).text('o');
 			$(this).addClass('disable o');
 
-			if (spot1.hasClass('o') && spot2.hasClass('o') && spot3.hasClass('o') ||
-		    spot4.hasClass('o') && spot5.hasClass('o') && spot6.hasClass('o') ||
-		    spot7.hasClass('o') && spot8.hasClass('o') && spot9.hasClass('o') ||
-		    spot1.hasClass('o') && spot4.hasClass('o') && spot7.hasClass('o') ||
-		    spot2.hasClass('o') && spot5.hasClass('o') && spot8.hasClass('o') ||
-		    spot3.hasClass('o') && spot6.hasClass('o') && spot9.hasClass('o') ||
-		    spot1.hasClass('o') && spot5.hasClass('o') && spot9.hasClass('o') ||
-		    spot3.hasClass('o') && spot5.hasClass('o') && spot7.hasClass('o')
-		    ) {
+			if (checkWinningCondition('o')) {
 				alert('Winner: O');
+				resetBoard();
 				turns = 0;
 		    }
+
+		    // O will have the last move, if the move does not lead to winning, it is a tiw
+		    if (turns == 9) {
+				alert('Tie Game');
+				resetBoard();
+				turns = 0;
+			}
 		}
 
-		// Or it is x turn
+		// Odd-indexed turn is X's turn
 		else {
 			turns++;
-			$(this).text(x);
+			$(this).text('x');
 			$(this).addClass('disable x');
 
-			if (spot1.hasClass('x') && spot2.hasClass('x') && spot3.hasClass('x') ||
-		    spot4.hasClass('x') && spot5.hasClass('x') && spot6.hasClass('x') ||
-		    spot7.hasClass('x') && spot8.hasClass('x') && spot9.hasClass('x') ||
-		    spot1.hasClass('x') && spot4.hasClass('x') && spot7.hasClass('x') ||
-		    spot2.hasClass('x') && spot5.hasClass('x') && spot8.hasClass('x') ||
-		    spot3.hasClass('x') && spot6.hasClass('x') && spot9.hasClass('x') ||
-		    spot1.hasClass('x') && spot5.hasClass('x') && spot9.hasClass('x') ||
-		    spot3.hasClass('x') && spot5.hasClass('x') && spot7.hasClass('x')
-		    ) {
+			if (checkWinningCondition('x')) {
 				alert('Winner: X');
+				resetBoard();
 				turns = 0;
 		    }
 		}
@@ -103,11 +73,9 @@ $(document).ready(function() {
 
 	// Reset handler
 	$('#reset').on('click', function() {
-		$('#board li').text('+');
-		$('#board li').removeClass('disable');
-		$('#board li').removeClass('o');
-		$('#board li').removeClass('x');
+		resetBoard();
 		turns = 0;
 	})
 
 });
+
